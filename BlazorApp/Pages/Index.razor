@@ -1,0 +1,137 @@
+﻿@page "/"
+@layout EmptyLayout;
+@inject DummyService DummySvc
+
+@if (!this._dataLoaded)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    <MDCAppTop>App Top Bar</MDCAppTop>
+    <MDCDrawer Items="_drawerItemList">
+        <MDCTabBar>
+            <MDCTab Caption="Button">
+                <MDCButton OnClick="Button_Click">@_dummy.SelectStringValue</MDCButton>
+            </MDCTab>
+            <MDCTab Caption="TextField">
+                <MDCTextField Caption="Text Field String" @bind-Value="_dummy.TextFieldValue" OnValueChanged="TextField_ValueChanged"></MDCTextField>
+            </MDCTab>
+            <MDCTab Caption="TextArea">
+                <MDCTextArea Caption="Text Area" @bind-Value="_dummy.TextAreaValue" OnValueChanged="TextArea_ValueChanged"></MDCTextArea>
+            </MDCTab>
+            <MDCTab Caption="DateTime">
+                <MDCDateTime Caption="Date" @bind-Value="_dummy.DateTimeValue"></MDCDateTime>
+                <MDCDateTime Caption="DateTime" ControlType="MDCDateTime.EnumControlType.DateTime" @bind-Value="_dummy.DateTimeValue"></MDCDateTime>
+                <MDCDateTime Caption="Time" ControlType="MDCDateTime.EnumControlType.Time" @bind-Value="_dummy.DateTimeValue"></MDCDateTime>
+            </MDCTab>
+            <MDCTab Caption="Select">
+                <MDCSelect Caption="Select String" TValueType="string" @bind-Value="_dummy.SelectStringValue" Items="_selectionListString"
+                           OnValueChanged="SelectString_ValueChanged"></MDCSelect>
+                <MDCSelect Caption="Select Int" TValueType="int?" @bind-Value="_dummy.SelectIntValue" Items="_selectionListInt"
+                           OnValueChanged="SelectInt_ValueChanged"></MDCSelect>
+            </MDCTab>
+            <MDCTab Caption="Radio">
+                <MDCRadio Caption="Radio String" TValueType="string" @bind-Value="_dummy.RadioStringValue" Items="_selectionListString"
+                          OnValueChanged="RadioString_ValueChanged" />
+                <MDCRadio Caption="Radio Int" TValueType="int?" @bind-Value="_dummy.RadioIntValue" Items="_selectionListInt"
+                          OnValueChanged="RadioInt_ValueChanged" />
+            </MDCTab>
+            <MDCTab Caption="Checkbox">
+                <MDCCheckbox Caption="Checkbox String" TValueType="string" @bind-Value="_dummy.CheckboxStringValues" Items="_selectionListString"
+                             OnValueChanged="CheckboxString_ValueChanged"></MDCCheckbox>
+                <MDCCheckbox Caption="Checkbox Int" TValueType="int?" @bind-Value="_dummy.CheckboxIntValues" Items="_selectionListInt"
+                             OnValueChanged="CheckboxInt_ValueChanged"></MDCCheckbox>
+            </MDCTab>
+            <MDCTab Caption="DataTable">
+                <MDCDataTable TValueType="DummyItemView" Data="@_dummy.DummyItems" OnSelectedDataChanged="DataTable_SelectedDataChanged">
+                    <HeaderTemplate>
+                        <MDCDataTableHeader>ID</MDCDataTableHeader>
+                        <MDCDataTableHeader>Name</MDCDataTableHeader>
+                        <MDCDataTableHeader>Quantity</MDCDataTableHeader>
+                        <MDCDataTableHeader>Unit Cost ($)</MDCDataTableHeader>
+                    </HeaderTemplate>
+                    <RowTemplate>
+                        <MDCDataTableRow>@context.ID</MDCDataTableRow>
+                        <MDCDataTableRow>@context.Name</MDCDataTableRow>
+                        <MDCDataTableRow>@context.Quantity</MDCDataTableRow>
+                        <MDCDataTableRow>@context.UnitCost</MDCDataTableRow>
+                    </RowTemplate>
+                </MDCDataTable>
+            </MDCTab>
+        </MDCTabBar>
+    </MDCDrawer>
+}
+
+@code
+{
+    private bool _dataLoaded = false;
+    private DummyView _dummy = null;
+    private List<DrawerBindItem> _drawerItemList { get; set; }
+    private List<ListBindItem<string>> _selectionListString { get; set; }
+    private List<ListBindItem<int?>> _selectionListInt { get; set; }
+
+    protected async Task Button_Click(MouseEventArgs args)
+    {
+    }
+
+    protected async Task TextField_ValueChanged(string value)
+    {
+    }
+
+    protected async Task TextArea_ValueChanged(string value)
+    {
+    }
+
+    protected async Task SelectString_ValueChanged(string value)
+    {
+    }
+
+    protected async Task SelectInt_ValueChanged(int? value)
+    {
+    }
+
+    protected async Task RadioString_ValueChanged(string value)
+    {
+    }
+
+    protected async Task RadioInt_ValueChanged(int? value)
+    {
+    }
+
+    protected async Task CheckboxString_ValueChanged(List<string> value)
+    {
+    }
+
+    protected async Task CheckboxInt_ValueChanged(List<int?> value)
+    {
+    }
+
+    protected async Task DataTable_SelectedDataChanged(List<DummyItemView> selectedData)
+    {
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (this._dummy == null)
+        {
+            Task<DummyView> dummyTask = DummySvc.GetDummyAsync("TextFieldValue", "TextAreaValue", "fruit", "vegetables");
+            Task<List<ListBindItem<string>>> selectStringTask = DummySvc.GetSelectListStringAsync();
+            Task<List<ListBindItem<int?>>> selectIntTask = DummySvc.GetSelectListIntAsync();
+            Task<List<DrawerBindItem>> menuListTask = DummySvc.GetMenuListAsync();
+            await Task.Delay(1000);
+            this._dummy = await dummyTask;
+            this._selectionListString = await selectStringTask;
+            this._selectionListInt = await selectIntTask;
+            this._drawerItemList = await menuListTask;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            this._dataLoaded = true;
+        }
+    }
+}
