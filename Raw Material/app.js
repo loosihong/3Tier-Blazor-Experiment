@@ -80,9 +80,9 @@ if (tabBar) {
           element.classList.add('hide');
         }
         //Open component when tab activated
-        if (activatedEvent.detail.index === 7) {
+        if (activatedEvent.detail.index === 8) {
           snackbar.open();
-        } if (activatedEvent.detail.index === 8) {
+        } if (activatedEvent.detail.index === 9) {
           if (dialogs) {
             dialogs.forEach((element, index) => {
               element.open();
